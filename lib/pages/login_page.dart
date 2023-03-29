@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'home_page.dart';
 import 'register_page.dart';
+import 'package:security_project/objects/user.dart';
+import 'package:security_project/objects/auth_service.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -8,6 +10,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+
   final _formKey = GlobalKey<FormState>();
   String _username = "";
   String _password = "";
@@ -73,10 +76,17 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _login(BuildContext context) {
-    if (_username == 'myusername' && _password == 'mypassword') {
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => HomePage()));
-    } else {
+    User currentUser = User(password: 'placeholder', username: 'placeholder', role: Role.user);
+    for(var user in AuthService.users){
+      if(user.username == _username && user.password == _password){
+        currentUser = user;
+      }
+    }
+
+    if (currentUser.username != 'placeholder'){
+      Navigator.pushReplacement(context, 
+      MaterialPageRoute(builder: (context) => HomePage(user: currentUser)));
+    }else{
       showDialog(
           context: context,
           builder: (context) => AlertDialog(
@@ -89,7 +99,6 @@ class _LoginPageState extends State<LoginPage> {
                 ],
               ));
     }
-
     // ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Logging in...')
   }
 }

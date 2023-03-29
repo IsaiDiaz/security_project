@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'login_page.dart';
+import 'package:security_project/objects/user.dart';
+import 'package:security_project/objects/auth_service.dart';
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -10,7 +12,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final _formKey = GlobalKey<FormState>();
   String _username = "";
   String _password = "";
-  String _role = "";
+  Role _role = Role.user;
 
   @override
   Widget build(BuildContext context) {
@@ -53,10 +55,10 @@ class _RegisterPageState extends State<RegisterPage> {
                   DropdownButtonFormField(
                     //value: _role,
                     decoration: InputDecoration(labelText: 'Role'),
-                    items: ['Admin', 'User']
+                    items: Role.values
                         .map((role) => DropdownMenuItem(
                               value: role,
-                              child: Text(role),
+                              child: Text(role.toString().split('.').last),
                             ))
                         .toList(),
                     validator: (value) {
@@ -67,7 +69,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     },
                     onChanged: (value) {
                       setState(() {
-                        _role = value.toString();
+                        _role = value!;
                       });
                     },
                   ),
@@ -77,6 +79,13 @@ class _RegisterPageState extends State<RegisterPage> {
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
                         _formKey.currentState!.save();
+                        final newUser = User(
+                            username: _username,
+                            password: _password,
+                            role: _role);
+
+                        AuthService.addUser(newUser);
+
                         _register(context);
                       }
                     },

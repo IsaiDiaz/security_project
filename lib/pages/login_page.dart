@@ -22,6 +22,14 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
         appBar: AppBar(
           title: Text('Login'),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.help),
+              onPressed: () {
+                _showSecurityTips(context);
+              },
+            ),
+          ],
         ),
         body: Padding(
           padding: EdgeInsets.all(16.0),
@@ -119,7 +127,8 @@ class _LoginPageState extends State<LoginPage> {
       }
     }
   }
-   void _blockApp(BuildContext context) {
+
+  void _blockApp(BuildContext context) {
     OverlayEntry overlayEntry = OverlayEntry(
       builder: (BuildContext context) {
         return Container(
@@ -138,4 +147,29 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
+  void _showSecurityTips(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Recomendaciones de seguridad'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('- Cambiar periodicamente la contraseña, para reducir el riesgo de que alguien adivine la contraseña'),
+            Text('- Evita reutilizar contraseñas que hayas usado en otros sitios'),
+            Text('- No compartas tus accesos con nadie externo a la organización'),
+            Text('- No uses contraseñas obvias, como tu nombre o fecha de nacimiento'),
+            Text('- Evita tener tus contraseñas guardadas tanto en fisico como en digital'),
+          ],
+        ),
+        actions: [
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
 }

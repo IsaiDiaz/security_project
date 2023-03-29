@@ -76,12 +76,8 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _login(BuildContext context) {
-    User currentUser = User(password: 'placeholder', username: 'placeholder', role: Role.user);
-    for(var user in AuthService.users){
-      if(user.username == _username && user.password == _password){
-        currentUser = user;
-      }
-    }
+    
+    User currentUser = AuthService.searchUser(_username, _password);
 
     if (currentUser.username != 'placeholder'){
       Navigator.pushReplacement(context, 

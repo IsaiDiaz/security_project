@@ -112,6 +112,7 @@ class _LoginPageState extends State<LoginPage> {
                         child: Text('OK'))
                   ],
                 ));
+        _loginAttempts = 0;
       } else {
         showDialog(
             context: context,
@@ -142,7 +143,7 @@ class _LoginPageState extends State<LoginPage> {
 
     Overlay.of(context).insert(overlayEntry);
 
-    Future.delayed(Duration(seconds: 5), () {
+    Future.delayed(Duration(seconds: 10), () {
       overlayEntry.remove();
     });
   }
@@ -151,16 +152,16 @@ class _LoginPageState extends State<LoginPage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Recomendaciones de seguridad'),
+        title: Text('Security Recomendations'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('- Cambiar periodicamente la contraseña, para reducir el riesgo de que alguien adivine la contraseña'),
-            Text('- Evita reutilizar contraseñas que hayas usado en otros sitios'),
-            Text('- No compartas tus accesos con nadie externo a la organización'),
-            Text('- No uses contraseñas obvias, como tu nombre o fecha de nacimiento'),
-            Text('- Evita tener tus contraseñas guardadas tanto en fisico como en digital'),
+            Text('- Periodically change the password, to reduce the risk of someone guessing the password'),
+            Text('- Do not use passwords that you used in other sites'),
+            Text('- Do not share your credentials with nobody'),
+            Text('- Avoid to use your personal information in your passwords'),
+            Text('- Avoid keeping your credentials on paper, notepads or digital notes without security'),
           ],
         ),
         actions: [

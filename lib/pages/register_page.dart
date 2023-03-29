@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'login_page.dart';
 import 'package:security_project/objects/user.dart';
 import 'package:security_project/objects/auth_service.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -16,6 +17,8 @@ class _RegisterPageState extends State<RegisterPage> {
   String _adminCodeInput = "";
   String _confirmPassword = "";
   Role _role = Role.user;
+  int _maxAdminRegisterAttemps = 3;
+  int _loginAdminAttemps = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +53,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         return 'Please enter a password';
                       }else{
                         setState(() {
-                        _password = value!;
+                        _password = value;
                         });
                       }
                       return null;
@@ -128,7 +131,22 @@ class _RegisterPageState extends State<RegisterPage> {
                         }
 
                         if (_role == Role.admin && _adminCodeInput != _adminCode) {
-                          _register(context, "Invalid admin code");
+                          _loginAdminAttemps++;
+                          if(_loginAdminAttemps >= _maxAdminRegisterAttemps){
+                            Fluttertoast.showToast(
+                              msg: "The maximum attempts to enter the administrator password has been exceeded",
+                              toastLength: Toast.LENGTH_LONG,
+                              gravity: ToastGravity.CENTER,
+                              timeInSecForIosWeb: 5,
+                            );
+                            Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => LoginPage()),
+                            );
+                          }else{
+                            _register(context, "Invalid admin code");
+                          }
                         }else{
                            String message = AuthService.addUser(newUser);
 

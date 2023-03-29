@@ -3,7 +3,10 @@ import 'package:crypto/crypto.dart';
 import 'dart:convert';
 
 class AuthService {
-  static List<User> users = [];
+  static List<User> users = [
+    User(username: 'debug', password: '0b8e9e995d8d77f1e4770f0f79665aee6f3f70247b3735422daba73df4c3096f', role: Role.admin),
+    User(username: 'debugU', password: 'a1d694942b98fc07012d5a7afed8447cddd41fcf4bedebd2cca8d0651fea2a54', role: Role.user)
+  ];
 
   static String addUser(User user) {
     var bytes = utf8.encode(user.password);

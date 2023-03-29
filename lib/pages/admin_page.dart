@@ -1,14 +1,25 @@
- import 'package:flutter/material.dart';
+ import 'dart:typed_data';
+
+import 'package:flutter/material.dart';
+ import 'package:security_project/objects/crypto_utils.dart';
 
  class AdminPage extends StatelessWidget {
+
+  final String adminSecretMessage = 'The admin secret message is: "I love Flutter!"';
+  final String password = 'admin';
    @override
    Widget build(BuildContext context) {
+    
+    print('Original message: $adminSecretMessage');
+    List<int> encrypted = CryptoUtils.encrypt(adminSecretMessage);
+    String decrypted = CryptoUtils.decrypt(encrypted);
+    print('Encrypted message: $encrypted');
      return Scaffold(
        appBar: AppBar(
          title: Text('Admin'),
      ),
        body: Center(
-         child: Text('Welcome Admin!'),
+         child: Text(decrypted),
        ),
      );
    }

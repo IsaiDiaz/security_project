@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'home_page.dart';
+import 'register_page.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -56,24 +57,39 @@ class _LoginPageState extends State<LoginPage> {
                       }
                     },
                     child: Text('Login'),
-                  )
+                  ),
+                  SizedBox(height: 16.0),
+                  TextButton(
+                      onPressed: () {
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => RegisterPage()));
+                      },
+                      child: Text('Create an account')),
                 ],
               )),
         ));
   }
 
   void _login(BuildContext context) {
-
-  if(_username == 'myusername' && _password == 'mypassword') {
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
-  } else {
-    showDialog(context: context, builder: (context) => AlertDialog(title: Text('Login failed'), content: Text('Please check your username and password'), actions: [ElevatedButton(onPressed: () => Navigator.pop(context), child: Text('OK'))],));
-  }
+    if (_username == 'myusername' && _password == 'mypassword') {
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => HomePage()));
+    } else {
+      showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+                title: Text('Login failed'),
+                content: Text('Please check your username and password'),
+                actions: [
+                  ElevatedButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: Text('OK'))
+                ],
+              ));
+    }
 
     // ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Logging in...')
-
   }
-
-
 }
-

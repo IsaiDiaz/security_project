@@ -84,9 +84,9 @@ class _RegisterPageState extends State<RegisterPage> {
                             password: _password,
                             role: _role);
 
-                        AuthService.addUser(newUser);
+                        String message = AuthService.addUser(newUser);
 
-                        _register(context);
+                        _register(context, message);
                       }
                     },
                     child: Text('Register'),
@@ -96,12 +96,13 @@ class _RegisterPageState extends State<RegisterPage> {
             )));
   }
 
-  void _register(BuildContext context) {
-    showDialog(
+  void _register(BuildContext context, String message) {
+    if(message == "User added"){
+      showDialog(
         context: context,
         builder: (context) => AlertDialog(
-              title: Text('Register'),
-              content: Text('New user registered'),
+              title: Text('Register Successful'),
+              content: Text(message),
               actions: [
                 ElevatedButton(
                     onPressed: () => Navigator.pushReplacement(
@@ -111,5 +112,19 @@ class _RegisterPageState extends State<RegisterPage> {
                     child: Text('OK'))
               ],
             ));
+    }else{
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: Text('ERROR'),
+              content: Text(message),
+              actions: [
+                ElevatedButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: Text('OK'))
+              ],
+            ));
+    }
+    
   }
 }

@@ -10,8 +10,11 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   final _formKey = GlobalKey<FormState>();
+  final String _adminCode = "admin";
   String _username = "";
   String _password = "";
+  String _adminCodeInput = "";
+  String _confirmPassword = "";
   Role _role = Role.user;
 
   @override
@@ -45,12 +48,48 @@ class _RegisterPageState extends State<RegisterPage> {
                     validator: (value) {
                       if (value!.isEmpty) {
                         return 'Please enter a password';
+                      }else{
+                        setState(() {
+                        _password = value!;
+                        });
                       }
                       return null;
                     },
                     onSaved: (value) {
-                      _password = value!;
+                        _password = value!;
                     },
+                  ),
+                  TextFormField(
+                    obscureText: true,
+                    decoration: InputDecoration(labelText: 'Confirm Password'),
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Please confirm your password';
+                      }
+                      if (value != _password) {
+                        return 'Passwords do not match';
+                      }else{
+                        return null;
+                      }
+                    },
+                    onSaved: (value) {
+                      _confirmPassword = value!;
+                    },
+                  ),
+                  Visibility(visible: _role == Role.admin, 
+                  child: TextFormField(
+                    obscureText: true,
+                    decoration: InputDecoration(labelText: 'Admin Code'),
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Please enter an admin code';
+                      }
+                      return null;
+                    },
+                    onSaved: (value) {
+                      _adminCodeInput = value!;
+                    },
+                  ),
                   ),
                   DropdownButtonFormField(
                     //value: _role,
@@ -83,10 +122,18 @@ class _RegisterPageState extends State<RegisterPage> {
                             username: _username,
                             password: _password,
                             role: _role);
+                        
+                        if( _password != _confirmPassword){
+                          _register(context, "Passwords do not match");
+                        }
 
-                        String message = AuthService.addUser(newUser);
+                        if (_role == Role.admin && _adminCodeInput != _adminCode) {
+                          _register(context, "Invalid admin code");
+                        }else{
+                           String message = AuthService.addUser(newUser);
 
-                        _register(context, message);
+                          _register(context, message);
+                        }
                       }
                     },
                     child: Text('Register'),
@@ -97,34 +144,34 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   void _register(BuildContext context, String message) {
-    if(message == "User added"){
+    if (message == "User added") {
       showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-              title: Text('Register Successful'),
-              content: Text(message),
-              actions: [
-                ElevatedButton(
-                    onPressed: () => Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(builder: (context) => LoginPage()),
-                        ),
-                    child: Text('OK'))
-              ],
-            ));
-    }else{
+          context: context,
+          builder: (context) => AlertDialog(
+                title: Text('Register Successful'),
+                content: Text(message),
+                actions: [
+                  ElevatedButton(
+                      onPressed: () => Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => LoginPage()),
+                          ),
+                      child: Text('OK'))
+                ],
+              ));
+    } else {
       showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-              title: Text('ERROR'),
-              content: Text(message),
-              actions: [
-                ElevatedButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: Text('OK'))
-              ],
-            ));
+          context: context,
+          builder: (context) => AlertDialog(
+                title: Text('ERROR'),
+                content: Text(message),
+                actions: [
+                  ElevatedButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: Text('OK'))
+                ],
+              ));
     }
-    
   }
 }

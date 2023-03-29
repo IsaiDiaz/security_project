@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'home_page.dart';
 import 'register_page.dart';
 import 'package:security_project/objects/user.dart';
 import 'package:security_project/objects/auth_service.dart';
+import 'package:flutter/services.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -10,7 +13,6 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-
   final _formKey = GlobalKey<FormState>();
   String _username = "";
   String _password = "";
@@ -75,26 +77,65 @@ class _LoginPageState extends State<LoginPage> {
         ));
   }
 
+  int _maxLoginAttempts = 3;
+  int _loginAttempts = 0;
+
   void _login(BuildContext context) {
-    
     User currentUser = AuthService.searchUser(_username, _password);
 
-    if (currentUser.username != 'placeholder'){
-      Navigator.pushReplacement(context, 
-      MaterialPageRoute(builder: (context) => HomePage(user: currentUser)));
-    }else{
-      showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-                title: Text('Login failed'),
-                content: Text('Please check your username and password'),
-                actions: [
-                  ElevatedButton(
-                      onPressed: () => Navigator.pop(context),
-                      child: Text('OK'))
-                ],
-              ));
+    if (currentUser.username != 'placeholder') {
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) => HomePage(user: currentUser)));
+    } else {
+      _loginAttempts++;
+      if (_loginAttempts >= _maxLoginAttempts) {
+        showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+                  title: Text('Login failed'),
+                  content: Text(
+                      'You have exceeded the maximum number of login attempts.'),
+                  actions: [
+                    ElevatedButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                          _blockApp(context);
+                        },
+                        child: Text('OK'))
+                  ],
+                ));
+      } else {
+        showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+                  title: Text('Login failed'),
+                  content: Text('Please check your username and password'),
+                  actions: [
+                    ElevatedButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: Text('OK'))
+                  ],
+                ));
+      }
     }
-    // ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Logging in...')
   }
+   void _blockApp(BuildContext context) {
+    OverlayEntry overlayEntry = OverlayEntry(
+      builder: (BuildContext context) {
+        return Container(
+          color: Colors.black.withOpacity(0.5),
+          child: Center(
+            child: CircularProgressIndicator(),
+          ),
+        );
+      },
+    );
+
+    Overlay.of(context).insert(overlayEntry);
+
+    Future.delayed(Duration(seconds: 5), () {
+      overlayEntry.remove();
+    });
+  }
+
 }

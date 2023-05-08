@@ -25,6 +25,18 @@ class _RegisterPageState extends State<RegisterPage> {
     return Scaffold(
         appBar: AppBar(
           title: Text('Register'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.login),
+            onPressed: () {
+              Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => LoginPage()),
+                          );
+            },
+          )
+        ],
         ),
         body: Padding(
             padding: EdgeInsets.all(16.0),

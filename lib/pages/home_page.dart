@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:security_project/objects/session_manager.dart';
 import 'package:security_project/objects/user.dart';
 import 'admin_page.dart';
 import 'user_page.dart';
@@ -16,14 +17,32 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
 
   final User user;
-
+  final sessionManager = SessionManager();
   _HomePageState({Key? key, required this.user});
+
+  @override
+  void initState() {
+    super.initState();
+    print(sessionManager.sessionId!);
+    if(!sessionManager.isActive!){
+      Navigator.pushReplacementNamed(context, '/login');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           title: Text('Home_page'),
+          actions: [
+            IconButton(
+              onPressed: () {
+                sessionManager.endSession();
+                Navigator.pushReplacementNamed(context, '/login');
+              },
+              icon: Icon(Icons.logout),
+            ),
+          ],
         ),
         body:
         Center(

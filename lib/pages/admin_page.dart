@@ -1,29 +1,43 @@
- import 'dart:typed_data';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
- import 'package:security_project/objects/crypto_utils.dart';
+import 'package:security_project/objects/crypto_utils.dart';
+import 'package:security_project/objects/session_manager.dart';
 
- class AdminPage extends StatelessWidget {
-
-  final String adminSecretMessage = 'The admin secret message is: "I love Flutter!"';
+class AdminPage extends StatelessWidget {
+  final String adminSecretMessage =
+      'The admin secret message is: "I love Flutter!"';
   final String password = 'admin';
-   @override
-   Widget build(BuildContext context) {
-    
+  final sessionManager = SessionManager();
+
+  @override
+  Widget build(BuildContext context) {
     print('Original message: $adminSecretMessage');
-    List<int> encrypted = CryptoUtils.encrypt(adminSecretMessage);
-    String decrypted = CryptoUtils.decrypt(encrypted);
-    print('Encrypted message: $encrypted');
-     return Scaffold(
-       appBar: AppBar(
-         title: Text('Admin'),
-     ),
-       body: Center(
-         child: Text(decrypted),
-       ),
-     );
-   }
- }
+    var encrypted = CryptoUtils.encrypt(adminSecretMessage);
+    var decrypted = CryptoUtils.decrypt(encrypted);
+    print('Encrypted message: ${encrypted.base16}');
+    if (!sessionManager.isActive!) {
+      Navigator.pushReplacementNamed(context, '/login');
+    }
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Admin'),
+        actions: [
+          IconButton(
+            onPressed: () {
+              sessionManager.endSession();
+              Navigator.pushReplacementNamed(context, '/login');
+            },
+            icon: Icon(Icons.logout),
+          ),
+        ],
+      ),
+      body: Center(
+        child: Text(decrypted),
+      ),
+    );
+  }
+}
 
 // import 'package:flutter/material.dart';
 // import 'dart:convert';

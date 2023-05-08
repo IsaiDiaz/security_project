@@ -1,13 +1,16 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:security_project/objects/session_manager.dart';
 import 'home_page.dart';
 import 'register_page.dart';
 import 'package:security_project/objects/user.dart';
 import 'package:security_project/objects/auth_service.dart';
 import 'package:flutter/services.dart';
+import 'dart:math';
 
 class LoginPage extends StatefulWidget {
+
   @override
   _LoginPageState createState() => _LoginPageState();
 }
@@ -74,7 +77,7 @@ class _LoginPageState extends State<LoginPage> {
                   SizedBox(height: 16.0),
                   TextButton(
                       onPressed: () {
-                        Navigator.pushReplacement(
+                        Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (context) => RegisterPage()));
@@ -87,11 +90,19 @@ class _LoginPageState extends State<LoginPage> {
 
   int _maxLoginAttempts = 3;
   int _loginAttempts = 0;
+  final sessionManager = SessionManager();
 
   void _login(BuildContext context) {
     User currentUser = AuthService.searchUser(_username, _password);
 
     if (currentUser.username != 'placeholder') {
+      final random = Random();
+      final now = DateTime.now();
+      final hostName = Platform.localHostname;
+
+      final sessionId = '${now.microsecondsSinceEpoch}-${hostName}-${random.nextInt(10000)}';
+      sessionManager.startSession(sessionId);
+      
       Navigator.pushReplacement(context,
           MaterialPageRoute(builder: (context) => HomePage(user: currentUser)));
     } else {

@@ -1,16 +1,21 @@
 import 'dart:convert';
 import 'dart:math';
-import 'dart:typed_data';
+import 'package:convert/convert.dart';
 import 'package:crypto/crypto.dart';
+import 'package:encrypt/encrypt.dart';
+
+final key = Key.fromSecureRandom(32);
+final iv = IV.fromSecureRandom(16);
+final encrypter = Encrypter(AES(key));
 
 class CryptoUtils{
 
-  static List<int> encrypt(String message){
-    return utf8.encode(message);;
+  static encrypt(message){
+    return encrypter.encrypt(message, iv: iv);
   }
 
-  static String decrypt(List<int> encrypted){
-    return utf8.decode(encrypted);
+  static String decrypt(encrypted){
+    return encrypter.decrypt(encrypted, iv: iv);
   }
 
 }
